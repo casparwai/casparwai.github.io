@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BSc Psychology with Education — Mid-Term Feedback Dashboard</title>
+<script src="https://fastly.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+<style>
+:root{
+  --navy:#1F3456; --deep:#1F497D; --mid:#365F91; --accent:#4F81BD; --steel:#4E6484;
+  --light:#EEF0F2; --pale:#DCE6F1; --paper:#f7f9fc; --ink:#1c2733; --muted:#6b7686;
+  --line:#d8e0ea; --brick:#C0504D;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;background:var(--paper);color:var(--ink);line-height:1.55}
+.wrap{max-width:1180px;margin:0 auto;padding:0 22px}
+header.hero{background:linear-gradient(135deg,var(--navy),var(--deep));color:#fff;padding:40px 0 30px}
+header.hero h1{font-size:28px;font-weight:700;letter-spacing:.2px}
+header.hero p{margin-top:8px;color:#d7e2f0;max-width:760px}
+.badges{margin-top:16px;display:flex;flex-wrap:wrap;gap:10px}
+.badge{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.25);border-radius:20px;padding:5px 14px;font-size:13px}
+nav.toc{position:sticky;top:0;z-index:20;background:var(--navy);box-shadow:0 1px 4px rgba(0,0,0,.15)}
+nav.toc .wrap{display:flex;flex-wrap:wrap;gap:4px}
+nav.toc a{color:#dbe6f3;text-decoration:none;font-size:13.5px;padding:11px 12px;display:block}
+nav.toc a:hover{color:#fff;background:var(--deep)}
+section{padding:34px 0 8px}
+h2{font-size:21px;color:var(--navy);margin-bottom:6px;border-left:4px solid var(--accent);padding-left:12px}
+.sub{color:var(--muted);font-size:14px;margin:4px 0 18px;padding-left:16px}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:18px}
+.kpi{background:#fff;border:1px solid var(--line);border-radius:12px;padding:18px;box-shadow:0 1px 3px rgba(31,52,86,.08)}
+.kpi .num{font-size:30px;font-weight:700;color:var(--deep)}
+.kpi .lbl{font-size:13.5px;color:var(--muted);margin-top:4px}
+.cards2{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+.card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:18px}
+.card h3{font-size:15px;color:var(--navy);margin-bottom:10px}
+.chart{width:100%;height:320px}
+.chart.tall{height:400px}
+.note{font-size:12.5px;color:var(--muted);margin-top:8px}
+.finding{background:#fff;border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:10px;padding:16px 18px;margin-bottom:14px}
+.finding h3{font-size:15px;color:var(--navy);margin-bottom:6px}
+.finding p{font-size:14px}
+.finding .stat{color:var(--deep);font-weight:600}
+select{font-size:14px;padding:8px 12px;border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--navy);margin-bottom:10px}
+.tabs{display:flex;gap:6px;margin:14px 0;flex-wrap:wrap}
+.tabbtn{border:1px solid var(--line);background:#fff;color:var(--steel);border-radius:8px;padding:9px 16px;font-size:14px;cursor:pointer}
+.tabbtn.active{background:var(--deep);color:#fff;border-color:var(--deep)}
+.qlist{display:grid;gap:12px}
+.quote{background:#fff;border:1px solid var(--line);border-radius:10px;padding:14px 16px;font-size:14px}
+.quote .tag{display:inline-block;font-size:11px;color:var(--mid);background:var(--pale);border-radius:5px;padding:2px 8px;margin-left:8px;vertical-align:middle}
+.quote .tag.trans{background:#fdeee0;color:#9a5a17}
+footer{padding:30px 0 50px;color:var(--muted);font-size:12.5px}
+@media(max-width:760px){
+  .kpis{grid-template-columns:repeat(2,1fr)}
+  .cards2{grid-template-columns:1fr}
+  header.hero h1{font-size:22px}
+  .chart{height:280px}
+}
+@media(max-width:480px){.kpis{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="wrap">
+    <h1>BSc Psychology with Education — Mid-Term Course Feedback</h1>
+    <p>Interactive review of the Term 1 mid-term survey: overall experience, settling in, reading and workload, AI use, assessment and feedback, support and communication, plus open-ended student comments.</p>
+    <div class="badges">
+      <span class="badge" id="badge-n"></span>
+      <span class="badge">Year 1 cohort</span>
+      <span class="badge">Blue theme aligned to the proposal document</span>
+    </div>
+  </div>
+</header>
+<nav class="toc"><div class="wrap">
+  <a href="#overview">Overview</a><a href="#profile">Profile</a><a href="#experience">Experience</a>
+  <a href="#reading">Reading &amp; AI</a><a href="#assessment">Assessment</a><a href="#support">Support</a>
+  <a href="#cross">Cross-cutting</a><a href="#qual">Open Comments</a>
+</div></nav>
+
+<main class="wrap">
+
+<section id="overview">
+  <h2>Headline figures</h2>
+  <p class="sub">Based on 22 completed Year-1 responses; item counts reflect those who answered each question.</p>
+  <div class="kpis" id="kpis"></div>
+</section>
+
+<section id="profile">
+  <h2>Respondent profile</h2>
+  <p class="sub">Based on 22 completed Year-1 responses; item counts reflect those who answered each question.</p>
+  <div class="cards2">
+    <div class="card"><h3>High-school curriculum</h3><div id="chart-curr" class="chart"></div></div>
+    <div class="card"><h3>Hours per week on set reading &amp; preparation</h3><div id="chart-hours" class="chart"></div></div>
+  </div>
+</section>
+
+<section id="experience">
+  <h2>Overall experience &amp; settling in</h2>
+  <p class="sub">Agreement rated 1–5. Bars show Disagree (1–2), Neutral (3) and Agree (4–5). Items marked "concern" are worded negatively, so agreement signals a problem.</p>
+  <div class="card" style="margin-bottom:16px"><h3>Overall experience</h3><div id="chart-overall" class="chart tall"></div></div>
+  <div class="card"><h3>Settling into the programme</h3><div id="chart-settling" class="chart"></div></div>
+</section>
+
+<section id="reading">
+  <h2>Reading, workload &amp; AI use</h2>
+  <div class="cards2" style="margin-bottom:16px">
+    <div class="card"><h3>Reading and workload statements</h3><div id="chart-reading" class="chart tall"></div></div>
+    <div class="card"><h3>Has reading/workload affected learning, wellbeing or ability to complete work?</h3><div id="chart-impact" class="chart"></div></div>
+  </div>
+  <div class="cards2">
+    <div class="card"><h3>Reasons for relying on AI tools</h3><div id="chart-ai" class="chart tall"></div></div>
+    <div class="card"><h3>How often AI tools are used for reading / class preparation</h3><div id="chart-aifreq" class="chart"></div></div>
+  </div>
+</section>
+
+<section id="assessment">
+  <h2>Assessment &amp; feedback</h2>
+  <div class="card" style="margin-bottom:16px"><h3>Rubric understanding and feedback quality</h3><div id="chart-assess" class="chart tall"></div></div>
+  <div class="cards2">
+    <div class="card"><h3>Feedback clearly relates to the marking criteria</h3><div id="chart-criteria" class="chart"></div></div>
+    <div class="card"><h3>Satisfaction with help on reports / criteria (office hours, TAs, lecturers)</h3><div id="chart-help" class="chart"></div></div>
+  </div>
+  <div class="cards2" style="margin-top:16px">
+    <div class="card"><h3>Support for publishing clearer rubric weighting information</h3><div id="chart-rubric" class="chart"></div></div>
+    <div class="card"><h3>Overall satisfaction with departmental support this term</h3><div id="chart-supportsat" class="chart"></div></div>
+  </div>
+</section>
+
+<section id="support">
+  <h2>Support &amp; communication</h2>
+  <div class="card"><h3>Knowing who to contact, tutor and mentor support, course rep awareness</h3><div id="chart-support" class="chart tall"></div></div>
+</section>
+
+<section id="cross">
+  <h2>Cross-cutting connections</h2>
+  <p class="sub">How balance, psychology depth, sociology perception, reading pressure and AI reliance cluster; and how the two curriculum groups compare.</p>
+  <div class="cards2" style="margin-bottom:16px">
+    <div class="card"><h3>Curriculum group comparison — select an item</h3>
+      <select id="cross-select"></select><div id="chart-cross" class="chart"></div>
+      <p class="note">Other = AP, IBDP and Irish Leaving Certificate (n=5). This group is very small, so differences are a lead to investigate, not a robust contrast.</p></div>
+    <div class="card"><h3>Average satisfaction by theme: A levels vs Other curricula</h3><div id="chart-radar" class="chart"></div></div>
+  </div>
+  <div class="card"><h3>Clustered issues (number of respondents, out of 22)</h3><div id="chart-overlap" class="chart tall"></div></div>
+  <div id="findings" style="margin-top:16px"></div>
+</section>
+
+<section id="qual">
+  <h2>Open-ended comments</h2>
+  <p class="sub">All written responses to the final three questions, organised in English. Two comments originally written in Chinese are translated and tagged. Non-substantive replies ("no", "nope", "don't know") are listed separately.</p>
+  <div class="tabs">
+    <button class="tabbtn active" data-tab="best">Best thing about the course</button>
+    <button class="tabbtn" data-tab="improve">One thing to improve</button>
+    <button class="tabbtn" data-tab="raise">To raise with the department</button>
+  </div>
+  <div class="qlist" id="qual-list"></div>
+  <p class="note" id="qual-note"></p>
+</section>
+
+</main>
+<footer><div class="wrap">
+  Early feedback from a Year-1 sample; figures are indications for discussion, not representative results for the whole cohort. Agreement scales are 1–5; endpoint wording follows the survey labels.
+</div></footer>
+
+<script>
+const DATA = {"meta": {"N": 22, "year": {"Year 1": 22}, "curr": {"IBDP": 1, "A levels": 16, "AP": 3, "Other (Please specify)": 1}, "curr_blank": 1}, "groups": {"overall": [{"code": "QID7_1", "label": "Clear sense of how the programme is structured and what to expect", "negative": false, "n": 22, "mean": 3.64, "agree": 12, "disagree": 1, "neutral": 9, "raw": {"Neither agree nor disagree": 9, "Agree": 9, "Disagree": 1, "Strongly agree": 3}}, {"code": "QID7_2", "label": "Course content is delivered in a well-organised way", "negative": false, "n": 22, "mean": 2.95, "agree": 8, "disagree": 7, "neutral": 7, "raw": {"Neither agree nor disagree": 7, "Agree": 8, "Strongly disagree": 2, "Disagree": 5}}, {"code": "QID7_3", "label": "The psychology–education balance is appropriate", "negative": false, "n": 22, "mean": 2.55, "agree": 5, "disagree": 11, "neutral": 6, "raw": {"Neither agree nor disagree": 6, "Disagree": 7, "Agree": 5, "Strongly disagree": 4}}, {"code": "QID7_4", "label": "Sufficient in-depth study of core psychological theories/concepts", "negative": false, "n": 22, "mean": 2.64, "agree": 5, "disagree": 11, "neutral": 6, "raw": {"Neither agree nor disagree": 6, "Disagree": 9, "Strongly disagree": 2, "Agree": 5}}, {"code": "QID7_5", "label": "Psychology theory–education linkages are strong and clear", "negative": false, "n": 22, "mean": 2.73, "agree": 4, "disagree": 10, "neutral": 8, "raw": {"Disagree": 10, "Neither agree nor disagree": 8, "Agree": 4}}, {"code": "QID7_6", "label": "Too much content feels sociology-focused rather than psychology-focused", "negative": true, "n": 22, "mean": 3.64, "agree": 12, "disagree": 2, "neutral": 8, "raw": {"Neither agree nor disagree": 8, "Strongly agree": 6, "Agree": 6, "Strongly disagree": 2}}, {"code": "QID7_7", "label": "I applied for pure Psychology and this programme was not my first choice", "negative": true, "n": 20, "mean": 2.9, "agree": 8, "disagree": 9, "neutral": 3, "raw": {"Neither agree nor disagree": 3, "Strongly disagree": 7, "Agree": 2, "Strongly agree": 6, "Disagree": 2}}], "settling": [{"code": "QID8_1", "label": "Settled into the pace and rhythm of university study", "negative": false, "n": 22, "mean": 3.18, "agree": 9, "disagree": 5, "neutral": 8, "raw": {"Neither agree nor disagree": 8, "Agree": 8, "Strongly disagree": 1, "Disagree": 4, "Strongly agree": 1}}, {"code": "QID8_2", "label": "Confident managing independent study and deadlines", "negative": false, "n": 22, "mean": 3.32, "agree": 11, "disagree": 6, "neutral": 5, "raw": {"Disagree": 6, "Strongly agree": 2, "Agree": 9, "Neither agree nor disagree": 5}}, {"code": "QID8_3", "label": "Know where to find help and resources when needed", "negative": false, "n": 22, "mean": 3.64, "agree": 17, "disagree": 4, "neutral": 1, "raw": {"Neither agree nor disagree": 1, "Agree": 16, "Disagree": 4, "Strongly agree": 1}}, {"code": "QID8_4", "label": "Building a sense of belonging with my course and fellow students", "negative": false, "n": 22, "mean": 3.59, "agree": 14, "disagree": 4, "neutral": 4, "raw": {"Strongly agree": 3, "Agree": 11, "Disagree": 4, "Neither agree nor disagree": 4}}, {"code": "QID8_5", "label": "Know who to ask if I have an academic or practical question", "negative": false, "n": 22, "mean": 3.55, "agree": 14, "disagree": 3, "neutral": 5, "raw": {"Neither agree nor disagree": 5, "Agree": 12, "Strongly agree": 2, "Disagree": 2, "Strongly disagree": 1}}], "reading": [{"code": "QID15_1", "label": "The amount of set reading is manageable", "negative": false, "n": 22, "mean": 2.59, "agree": 6, "disagree": 11, "neutral": 5, "raw": {"Disagree": 7, "Agree": 6, "Neither agree nor disagree": 5, "Strongly disagree": 4}}, {"code": "QID15_2", "label": "Generally able to keep up with the assigned reading", "negative": false, "n": 22, "mean": 3, "agree": 8, "disagree": 10, "neutral": 4, "raw": {"Disagree": 10, "Agree": 6, "Neither agree nor disagree": 4, "Strongly agree": 2}}, {"code": "QID15_3", "label": "The reading load across modules is balanced and reasonable", "negative": false, "n": 22, "mean": 2.77, "agree": 5, "disagree": 8, "neutral": 9, "raw": {"Neither agree nor disagree": 9, "Agree": 5, "Strongly disagree": 2, "Disagree": 6}}, {"code": "QID15_4", "label": "The overall workload this term is manageable", "negative": false, "n": 22, "mean": 3.32, "agree": 11, "disagree": 3, "neutral": 8, "raw": {"Neither agree nor disagree": 8, "Agree": 10, "Strongly agree": 1, "Strongly disagree": 2, "Disagree": 1}}, {"code": "QID15_5", "label": "Enough time to complete assignments to a standard I am happy with", "negative": false, "n": 22, "mean": 3.14, "agree": 10, "disagree": 8, "neutral": 4, "raw": {"Disagree": 8, "Agree": 9, "Strongly agree": 1, "Neither agree nor disagree": 4}}], "ai_rel": [{"code": "QID19_1", "label": "Sometimes rely on AI tools to help keep up with the reading", "negative": false, "n": 22, "mean": 3.41, "agree": 15, "disagree": 6, "neutral": 1, "raw": {"Agree": 11, "Strongly disagree": 4, "Strongly agree": 4, "Neither agree nor disagree": 1, "Disagree": 2}}, {"code": "QID19_2", "label": "Use AI to summarise/explain readings because I cannot manage the full amount", "negative": false, "n": 22, "mean": 3.32, "agree": 14, "disagree": 6, "neutral": 2, "raw": {"Neither agree nor disagree": 2, "Strongly disagree": 4, "Agree": 11, "Strongly agree": 3, "Disagree": 2}}, {"code": "QID19_3", "label": "Use AI because the reading content is too confusing/difficult", "negative": false, "n": 22, "mean": 3.18, "agree": 12, "disagree": 5, "neutral": 5, "raw": {"Neither agree nor disagree": 5, "Strongly disagree": 4, "Strongly agree": 1, "Agree": 11, "Disagree": 1}}, {"code": "QID19_4", "label": "Worry that relying on AI means I am not doing enough reading myself", "negative": false, "n": 22, "mean": 3.73, "agree": 15, "disagree": 3, "neutral": 4, "raw": {"Strongly agree": 6, "Agree": 9, "Neither agree nor disagree": 4, "Strongly disagree": 2, "Disagree": 1}}], "assess": [{"code": "QID27_1", "label": "I understand what the practical-report marking criteria (rubric) require", "negative": false, "n": 22, "mean": 2.95, "agree": 8, "disagree": 7, "neutral": 7, "raw": {"Neither agree nor disagree": 7, "Agree": 8, "Strongly disagree": 2, "Disagree": 5}}, {"code": "QID27_2", "label": "It is clear how the different rubric sections are weighted", "negative": false, "n": 22, "mean": 2.95, "agree": 8, "disagree": 8, "neutral": 6, "raw": {"Neither agree nor disagree": 6, "Agree": 8, "Disagree": 7, "Strongly disagree": 1}}, {"code": "QID27_3", "label": "I can use the rubric to guide writing and self-assess before submission", "negative": false, "n": 22, "mean": 3, "agree": 8, "disagree": 7, "neutral": 7, "raw": {"Neither agree nor disagree": 7, "Agree": 8, "Disagree": 6, "Strongly disagree": 1}}, {"code": "QID27_4", "label": "The feedback I receive is specific and useful", "negative": false, "n": 22, "mean": 2.82, "agree": 6, "disagree": 7, "neutral": 9, "raw": {"Neither agree nor disagree": 9, "Disagree": 4, "Agree": 6, "Strongly disagree": 3}}, {"code": "QID27_5", "label": "Group/cohort feedback on first drafts is helpful for improving my work", "negative": false, "n": 21, "mean": 2.67, "agree": 3, "disagree": 7, "neutral": 11, "raw": {"Disagree": 4, "Agree": 3, "Neither agree nor disagree": 11, "Strongly disagree": 3}}, {"code": "QID27_6", "label": "The feedback helps me know exactly what to improve", "negative": false, "n": 22, "mean": 3, "agree": 5, "disagree": 4, "neutral": 13, "raw": {"Neither agree nor disagree": 13, "Agree": 5, "Disagree": 3, "Strongly disagree": 1}}], "support": [{"code": "QID32_1", "label": "Know how to contact staff if I have a question or problem", "negative": false, "n": 22, "mean": 3.68, "agree": 16, "disagree": 4, "neutral": 2, "raw": {"Neither agree nor disagree": 2, "Agree": 13, "Strongly agree": 3, "Disagree": 4}}, {"code": "QID32_2", "label": "Department communication (Moodle, email, announcements) is clear and timely", "negative": false, "n": 22, "mean": 3.59, "agree": 14, "disagree": 3, "neutral": 5, "raw": {"Neither agree nor disagree": 5, "Agree": 12, "Disagree": 3, "Strongly agree": 2}}, {"code": "QID32_3", "label": "My personal tutor is approachable and helpful", "negative": false, "n": 22, "mean": 3.91, "agree": 15, "disagree": 2, "neutral": 5, "raw": {"Neither agree nor disagree": 5, "Agree": 8, "Strongly agree": 7, "Disagree": 2}}, {"code": "QID32_4", "label": "My transition mentor helped me settle in", "negative": false, "n": 22, "mean": 4.23, "agree": 19, "disagree": 0, "neutral": 3, "raw": {"Strongly agree": 8, "Agree": 11, "Neither agree nor disagree": 3}}, {"code": "QID32_5", "label": "I know who my Course Representative is and how to raise issues", "negative": false, "n": 22, "mean": 4.23, "agree": 19, "disagree": 0, "neutral": 3, "raw": {"Strongly agree": 8, "Agree": 11, "Neither agree nor disagree": 3}}]}, "single": {"QID9": {"n": 22, "raw": {"Neither easy nor difficult": 6, "Somewhat difficult": 8, "Somewhat easy": 8}}, "QID18": {"n": 22, "raw": {"Slightly": 12, "Not at all": 2, "Severely": 1, "Moderately": 7}}, "QID20": {"n": 22, "raw": {"Never": 4, "Rarely": 3, "Almost every day": 3, "Often": 7, "Sometimes": 5}}, "QID28": {"n": 20, "raw": {"Sometimes": 7, "Rarely": 9, "Never": 2, "Often": 2}}, "QID29": {"n": 22, "raw": {"Neither": 11, "Satisfied": 7, "Very satisfied": 2, "Dissatisfied": 2}}, "QID30": {"n": 22, "raw": {"Yes": 19, "Not sure": 3}}, "QID33": {"n": 22, "raw": {"Neither": 7, "Satisfied": 8, "Dissatisfied": 4, "Very satisfied": 2, "Very dissatisfied": 1}}}, "hours": {"n": 22, "mean": 8.1, "median": 8.5, "min": 2, "max": 12, "dist": {"2": 1, "3": 0, "4": 1, "5": 1, "6": 3, "7": 3, "8": 2, "9": 1, "10": 8, "11": 1, "12": 1}}, "cross": {"QID7_3": {"label": "Balance appropriate", "A": {"n": 16, "mean": 2.31, "disagree": 10, "agree": 3}, "B": {"n": 5, "mean": 3.2, "disagree": 1, "agree": 2}}, "QID7_4": {"label": "Sufficient psychology depth", "A": {"n": 16, "mean": 2.5, "disagree": 9, "agree": 3}, "B": {"n": 5, "mean": 3.2, "disagree": 1, "agree": 2}}, "QID7_5": {"label": "Psych–Ed links clear", "A": {"n": 16, "mean": 2.62, "disagree": 8, "agree": 2}, "B": {"n": 5, "mean": 3, "disagree": 2, "agree": 2}}, "QID7_6": {"label": "Too sociology-focused", "A": {"n": 16, "mean": 3.75, "disagree": 2, "agree": 10}, "B": {"n": 5, "mean": 3.2, "disagree": 0, "agree": 1}}, "QID15_1": {"label": "Reading manageable", "A": {"n": 16, "mean": 2.38, "disagree": 10, "agree": 4}, "B": {"n": 5, "mean": 3.2, "disagree": 1, "agree": 2}}, "QID15_2": {"label": "Keep up with reading", "A": {"n": 16, "mean": 2.94, "disagree": 8, "agree": 5}, "B": {"n": 5, "mean": 3, "disagree": 2, "agree": 2}}, "QID15_5": {"label": "Time for assignments", "A": {"n": 16, "mean": 3.12, "disagree": 6, "agree": 7}, "B": {"n": 5, "mean": 3.2, "disagree": 2, "agree": 3}}, "QID15_4": {"label": "Overall workload manageable", "A": {"n": 16, "mean": 3.25, "disagree": 3, "agree": 8}, "B": {"n": 5, "mean": 3.6, "disagree": 0, "agree": 3}}}, "radar": {"indicators": [{"name": "Balance", "max": 5}, {"name": "Psych depth", "max": 5}, {"name": "Links", "max": 5}, {"name": "Reading", "max": 5}, {"name": "Workload", "max": 5}, {"name": "Assignment time", "max": 5}], "A": [2.31, 2.5, 2.62, 2.38, 3.25, 3.12], "B": [3.2, 3.2, 3, 3.2, 3.6, 3.2]}, "overlap": {"balance_depth_dis": 6, "sociology_ag": 12, "sociology_balance_dis": 9, "keepup_dis": 10, "impact_high": 8, "keepup_impact": 4, "ai_frequent": 10, "ai_worry": 15, "rubric_yes": 19, "rubric_unsure": 3, "feedback_poor": 11, "feedback_n": 20}};
+const PAL={disagree:'#9db4d1',neutral:'#c9d4e3',agree:'#1F497D',deep:'#1F497D',mid:'#365F91',accent:'#4F81BD',agree2:'#4F81BD',steel:'#4E6484',pale:'#DCE6F1'};
+const PIE=['#1F497D','#4F81BD','#8FAADC','#B5C7E0','#C9D4E3'];
+const charts=[];
+function mk(id){const c=echarts.init(document.getElementById(id));charts.push(c);return c;}
+window.addEventListener('resize',()=>charts.forEach(c=>c.resize()));
+const N=DATA.meta.N;
+
+// ---- KPI ----
+const O=DATA.overlap;
+document.getElementById('badge-n').textContent=N+' completed responses';
+const kpis=[
+  {num:N+'',lbl:'completed responses, all Year 1'},
+  {num:'50%',lbl:'disagree that the psychology–education balance is appropriate (11 of 22)',accent:true},
+  {num:'55%',lbl:'feel too much content is sociology-focused (12 of 22)',accent:true},
+  {num:'45%',lbl:'cannot generally keep up with assigned reading (10 of 22)',accent:true},
+  {num:'68%',lbl:'worry AI reliance means they are not doing enough reading themselves (15 of 22)',accent:true},
+  {num:'86%',lbl:'support publishing clearer rubric weighting information (19 of 22)'}
+];
+document.getElementById('kpis').innerHTML=kpis.map(k=>`<div class="kpi"><div class="num">${k.num}</div><div class="lbl">${k.lbl}</div></div>`).join('');
+
+// ---- curriculum donut ----
+const curr=DATA.meta.curr, blank=DATA.meta.curr_blank;
+const currData=[
+  {name:'A levels',value:curr['A levels']||0},
+  {name:'AP',value:curr['AP']||0},
+  {name:'IBDP',value:curr['IBDP']||0},
+  {name:'Other (Irish Leaving Certificate)',value:curr['Other (Please specify)']||0},
+  {name:'No answer',value:blank}
+];
+mk('chart-curr').setOption({
+  color:PIE,
+  tooltip:{show:false},
+  legend:{bottom:0,textStyle:{color:'#4E6484',fontSize:11}},
+  series:[{type:'pie',radius:['42%','68%'],center:['50%','44%'],avoidLabelOverlap:true,
+    label:{formatter:'{b} {c}',color:'#1c2733',fontSize:11},
+    data:currData}]
+});
+
+// ---- hours histogram ----
+const h=DATA.hours;
+const hkeys=Object.keys(h.dist).map(Number).sort((a,b)=>a-b);
+mk('chart-hours').setOption({
+  color:[PAL.mid],
+  grid:{left:10,right:20,top:20,bottom:30,containLabel:true},
+  xAxis:{type:'category',data:hkeys.map(k=>k+'h'),axisLabel:{color:'#6b7686'}},
+  yAxis:{type:'value',minInterval:1,axisLabel:{color:'#6b7686'},splitLine:{lineStyle:{color:'#eef2f7'}}},
+  tooltip:{show:false},
+  series:[{type:'bar',data:hkeys.map(k=>h.dist[String(k)]),barWidth:'60%',itemStyle:{color:PAL.mid,borderRadius:[4,4,0,0]}}]
+});
+
+// ---- agreement stacked horizontal ----
+function agreementChart(id,items){
+  const c=mk(id);
+  const labels=items.map(x=>x.label+(x.negative?'  · concern':''));
+  c.setOption({
+    grid:{left:10,right:60,top:10,bottom:10,containLabel:true},
+    xAxis:{type:'value',max:100,axisLabel:{formatter:'{value}%',color:'#6b7686'},splitLine:{lineStyle:{color:'#eef2f7'}}},
+    yAxis:{type:'category',data:labels,inverse:true,axisLabel:{color:'#1c2733',fontSize:12,width:230,overflow:'break'}},
+    tooltip:{show:false},
+    legend:{data:['Disagree','Neutral','Agree'],top:0,textStyle:{color:'#4E6484',fontSize:12}},
+    series:[
+      {name:'Disagree',type:'bar',stack:'t',color:PAL.disagree,data:items.map(x=>pct(x.disagree,x.n)),label:{show:true,formatter:v=>v.value?Math.round(v.value)+'%':'',color:'#fff',fontSize:11}},
+      {name:'Neutral',type:'bar',stack:'t',color:PAL.neutral,data:items.map(x=>pct(x.neutral,x.n))},
+      {name:'Agree',type:'bar',stack:'t',color:PAL.agree,data:items.map(x=>pct(x.agree,x.n)),label:{show:true,formatter:v=>v.value?Math.round(v.value)+'%':'',color:'#fff',fontSize:11}}
+    ]
+  });
+  function tooltipFmt(ps){
+    const i=ps[0].dataIndex,x=items[i];
+    const rows=[['Disagree',x.disagree],['Neutral',x.neutral],['Agree',x.agree]];
+    return `<b>${x.label}</b><br>answered: ${x.n} · mean ${x.mean}<br>`+rows.map(r=>`${r[0]}: ${r[1]}`).join('<br>');
+  }
+}
+function pct(num,n){return n?+(num/n*100).toFixed(1):0;}
+agreementChart('chart-overall',DATA.groups.overall);
+agreementChart('chart-settling',DATA.groups.settling);
+agreementChart('chart-reading',DATA.groups.reading);
+agreementChart('chart-ai',DATA.groups.ai_rel);
+agreementChart('chart-assess',DATA.groups.assess);
+agreementChart('chart-support',DATA.groups.support);
+
+// ---- vertical bar from raw labels ----
+const ORDERS={
+  QID18:['Not at all','Slightly','Moderately','Severely'],
+  QID28:['Never','Rarely','Sometimes','Often'],
+  QID29:['Dissatisfied','Neither','Satisfied','Very satisfied'],
+  QID33:['Very dissatisfied','Dissatisfied','Neither','Satisfied','Very satisfied']
+};
+function barChart(id,code){
+  const d=DATA.single[code], order=ORDERS[code];
+  const labels=order.filter(l=>d.raw[l]!==undefined || true);
+  const data=order.map(l=>d.raw[l]||0);
+  mk(id).setOption({
+    color:[PAL.deep],
+    grid:{left:10,right:20,top:20,bottom:40,containLabel:true},
+    xAxis:{type:'category',data:order,axisLabel:{color:'#6b7686',fontSize:11,interval:0,rotate:18}},
+    yAxis:{type:'value',minInterval:1,axisLabel:{color:'#6b7686'},splitLine:{lineStyle:{color:'#eef2f7'}}},
+    tooltip:{show:false},
+    series:[{type:'bar',data:data,barWidth:'55%',itemStyle:{color:PAL.deep,borderRadius:[4,4,0,0]}}]
+  });
+}
+barChart('chart-impact','QID18');
+barChart('chart-criteria','QID28');
+barChart('chart-help','QID29');
+barChart('chart-supportsat','QID33');
+
+// ---- donut: AI frequency ----
+const ai=DATA.single.QID20.raw, aiOrder=['Never','Rarely','Sometimes','Often','Almost every day'];
+mk('chart-aifreq').setOption({
+  color:PIE,
+  tooltip:{show:false},
+  legend:{bottom:0,textStyle:{color:'#4E6484',fontSize:11}},
+  series:[{type:'pie',radius:['40%','66%'],center:['50%','44%'],label:{formatter:'{b} {c}',color:'#1c2733',fontSize:11},
+    data:aiOrder.map(l=>({name:l,value:ai[l]||0}))}]
+});
+
+// ---- donut: rubric support ----
+const rb=DATA.single.QID30.raw;
+mk('chart-rubric').setOption({
+  color:[PAL.agree,'#C9D4E3'],
+  tooltip:{show:false},
+  legend:{bottom:0,textStyle:{color:'#4E6484',fontSize:12}},
+  series:[{type:'pie',radius:['42%','68%'],center:['50%','44%'],label:{formatter:'{b} {c}',color:'#1c2733',fontSize:12},
+    data:[{name:'Yes, support',value:rb['Yes']||0},{name:'Not sure',value:rb['Not sure']||0}]}]
+});
+
+// ---- cross grouped bar ----
+const crossKeys=Object.keys(DATA.cross);
+const sel=document.getElementById('cross-select');
+sel.innerHTML=crossKeys.map((k,i)=>`<option value="${k}" ${i===0?'selected':''}>${DATA.cross[k].label}</option>`).join('');
+const crossChart=mk('chart-cross');
+function renderCross(){
+  const k=sel.value,c=DATA.cross[k];
+  crossChart.setOption({
+    grid:{left:10,right:20,top:30,bottom:40,containLabel:true},
+    legend:{top:0,textStyle:{color:'#4E6484'}},
+    xAxis:{type:'category',data:[`A levels (n=${c.A.n})`,`Other (n=${c.B.n})`],axisLabel:{color:'#1c2733'}},
+    yAxis:{type:'value',min:0,max:5,axisLabel:{color:'#6b7686'},splitLine:{lineStyle:{color:'#eef2f7'}}},
+    tooltip:{show:false},
+    series:[
+      {name:'A levels',type:'bar',color:PAL.agree,data:[c.A.mean],barWidth:'32%',itemStyle:{color:PAL.agree,borderRadius:[4,4,0,0]},label:{show:true,position:'top',color:'#1F3456'}},
+      {name:'Other',type:'bar',color:PAL.accent,data:[c.B.mean],barWidth:'32%',itemStyle:{color:PAL.accent,borderRadius:[4,4,0,0]},label:{show:true,position:'top',color:'#1F3456'}}
+    ]
+  });
+}
+sel.addEventListener('change',renderCross);renderCross();
+
+// ---- radar ----
+mk('chart-radar').setOption({
+  legend:{top:0,textStyle:{color:'#4E6484'}},
+  radar:{indicator:DATA.radar.indicators,radius:'62%',axisName:{color:'#1c2733',fontSize:11},splitLine:{lineStyle:{color:'#d8e0ea'}},splitArea:{areaStyle:{color:['#fff','#f2f6fb']}}},
+  tooltip:{show:false},
+  series:[
+    {name:'A levels',type:'radar',symbol:'circle',symbolSize:6,lineStyle:{color:PAL.agree,width:2.5},itemStyle:{color:PAL.agree},areaStyle:{color:'rgba(31,73,125,.18)'},data:[{name:'A levels',value:DATA.radar.A}]},
+    {name:'Other',type:'radar',symbol:'circle',symbolSize:6,lineStyle:{color:PAL.accent,width:2.5},itemStyle:{color:PAL.accent},areaStyle:{color:'rgba(79,129,189,.16)'},data:[{name:'Other',value:DATA.radar.B}]}
+  ]
+});
+
+// ---- concern counts: clean vertical bar ----
+const ov=[
+  ['Balance & depth\nrejected',O.balance_depth_dis],
+  ['Content feels\nsociology-focused',O.sociology_ag],
+  ['Sociology-focused &\nbalance rejected',O.sociology_balance_dis],
+  ['Cannot keep up\nwith reading',O.keepup_dis],
+  ['Workload affected\nlearning/wellbeing',O.impact_high],
+  ['Cannot keep up &\nhigh workload impact',O.keepup_impact],
+  ['Use AI often /\nevery day',O.ai_frequent],
+  ['Worry AI means not\nreading enough',O.ai_worry],
+  ['Support clearer\nrubric weighting',O.rubric_yes],
+  ['Feedback rarely/never\ntied to criteria',O.feedback_poor]
+];
+mk('chart-overlap').setOption({
+  grid:{left:24,right:20,top:20,bottom:60,containLabel:true},
+  xAxis:{type:'category',data:ov.map(x=>x[0]),axisLabel:{color:'#1c2733',fontSize:10,interval:0,rotate:32}},
+  yAxis:{type:'value',minInterval:1,name:'respondents',nameTextStyle:{color:'#6b7686'},axisLabel:{color:'#6b7686'},splitLine:{lineStyle:{color:'#eef2f7'}}},
+  tooltip:{show:false},
+  series:[{type:'bar',color:PAL.deep,data:ov.map(x=>x[1]),barWidth:'52%',itemStyle:{color:PAL.deep,borderRadius:[4,4,0,0]},label:{show:true,position:'top',color:'#1F3456'}}]
+});
+
+// ---- findings ----
+const findings=[
+  ['Balance and psychology depth are the clearest concerns',
+   `<span class="stat">11 of 22 (50%)</span> disagree the psychology–education balance is appropriate, <span class="stat">11 of 22 (50%)</span> report insufficient in-depth psychology, and <span class="stat">12 of 22 (55%)</span> feel too much content is sociology-focused. The views cluster: 9 of the 12 who find content sociology-focused also disagree the balance is appropriate, and 6 respondents disagree on both balance and psychology depth.`],
+  ['Reading pressure is the second connected priority',
+   `<span class="stat">11 of 22 (50%)</span> find the set reading unmanageable and <span class="stat">10 of 22 (45%)</span> cannot keep up; <span class="stat">8 of 22 (36%)</span> say workload has affected their learning, wellbeing or ability to complete work at least moderately, and 4 of those struggling to keep up also report high impact. Reported time averages <span class="stat">${h.mean}h/week</span> (median ${h.median}h, range ${h.min}–${h.max}h).`],
+  ['AI use tracks reading pressure, and students are uneasy about it',
+   `<span class="stat">10 of 22 (45%)</span> use AI often or almost every day; <span class="stat">15 of 22 (68%)</span> worry that relying on AI means they are not doing enough of the reading themselves. Fourteen lean on AI because they cannot manage the full amount, and 12 because the content is too confusing or difficult — pointing to comprehension support rather than simply a shorter reading list.`],
+  ['Assessment feedback is a weak point; students want transparent rubrics',
+   `<span class="stat">11 of 20 (55%)</span> rarely or never feel feedback is tied to the marking criteria, and only <span class="stat">6 of 22 (27%)</span> find feedback specific and useful. Against this, <span class="stat">19 of 22 (86%)</span> support advocating for clearer published information on how rubrics are weighted (3 not sure, none opposed).`],
+  ['Support and contact channels are the relative strength',
+   `<span class="stat">19 of 22 (86%)</span> say their transition mentor helped them settle in and <span class="stat">19 of 22 (86%)</span> know who their Course Representative is; <span class="stat">17 of 22 (77%)</span> know where to find help and resources. Personal tutor support scores highest among support items (mean 3.91/5).`],
+  ['Curriculum background may correlate with satisfaction — check before generalising',
+   `On every theme shown in the radar, the A-level group (n=16) rates satisfaction lower than the Other curricula group (n=5: AP, IBDP, Irish Leaving Certificate). Because that comparison group is very small, treat this as a follow-up lead, not evidence of a durable difference.`]
+];
+document.getElementById('findings').innerHTML=findings.map(f=>`<div class="finding"><h3>${f[0]}</h3><p>${f[1]}</p></div>`).join('');
+
+// ---- qualitative ----
+const QUAL={
+  best:{title:'Best thing about the course so far',items:[
+    {t:'Psychology: The Science of Behaviour has been really interesting. The lecturers are both great.'},
+    {t:'The education modules.'},
+    {t:'Clear instruction.'},
+    {t:'Living in a Schooled Society module; the ability to choose optional modules.'},
+    {t:'SOB1 — Psychology: The Science of Behaviour 1.'}
+  ],non:['“don’t know”']},
+  improve:{title:'One thing that would most improve the experience',items:[
+    {t:'More psychology-related courses should be available among the optional modules.',tag:'translated'},
+    {t:'Have more time to write essays and reports.'},
+    {t:'Clearer instructions; provide exemplars to guide our assessments.'},
+    {t:'The proportion of psychology modules needs addressing — there should be more psychology courses; I really do not want to study much more education.',tag:'translated'},
+    {t:'More rigorous psychological research lectures — reduce the pre-reading and do more learning in the lectures. All we do is an easy Mentimeter quiz that you can pass even if you have only skimmed the reading, which makes the extensive reading feel like a waste of time, since none of it actually comes up in the lecture.'},
+    {t:'Fewer reading assignments, so there is time to review and preview material.'},
+    {t:'Lecturers to be more specific about assessments.'},
+    {t:'Less reading.'}
+  ],non:[]},
+  raise:{title:'Anything else to raise with the department',items:[
+    {t:'The teaching in psychological research by Juhayna Taha is not clear at all.'},
+    {t:'The amount of reading set is large, and assessment deadlines are too close together — students are expected to write essays worth thousands of words within a week or two, while assessment information and guidance are given at the last minute. This needs to be improved.'}
+  ],non:['“-”','“nope”','“No”','“no”']}
+};
+function renderQual(tab){
+  const q=QUAL[tab];
+  document.getElementById('qual-list').innerHTML=q.items.map((x,i)=>
+    `<div class="quote">${i+1}. ${x.t}${x.tag===undefined?'':'<span class="tag '+(x.tag==='translated'?'trans':'')+'">Translated from Chinese</span>'}</div>`
+  ).join('');
+  document.getElementById('qual-note').textContent=q.non.length?('Non-substantive replies: '+q.non.join(', ')+'.'):'';
+}
+document.querySelectorAll('.tabbtn').forEach(b=>b.addEventListener('click',()=>{
+  document.querySelectorAll('.tabbtn').forEach(x=>x.classList.remove('active'));
+  b.classList.add('active');renderQual(b.dataset.tab);
+}));
+renderQual('best');
+</script>
+</body>
+</html>
